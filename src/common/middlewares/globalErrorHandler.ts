@@ -2,6 +2,7 @@ import { HttpError } from "http-errors";
 import { v4 as uuidv4 } from "uuid";
 import { NextFunction, Request, Response } from "express";
 import logger from "../../config/logger";
+import config from "config";
 
 export const globalErrorHandler = (
     err: HttpError,
@@ -13,7 +14,7 @@ export const globalErrorHandler = (
     const errorId = uuidv4();
 
     const statusCode = err.status || 500;
-    const isProduction = process.env.NODE_ENV === "production";
+    const isProduction = config.get("server.env") === "production";
     const message = isProduction
         ? `An unexpected error occurred.`
         : err.message;

@@ -6,7 +6,7 @@ const startServer = async () => {
     const PORT = config.get("server.port") ?? 3300;
     try {
         await initDB();
-        logger.info("Connected to MongoDB successfully!");
+        // logger.info("Connected to MongoDB successfully!");
 
         app.listen(PORT, () => logger.info(`Listening on port ${PORT}`));
     } catch (err: unknown) {

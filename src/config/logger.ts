@@ -1,32 +1,62 @@
-import winston from "winston";
+import winston, { format, transports } from "winston";
+import config from "config";
+
+// Custom format for structured logging
+const customFormat = format.printf(
+  ({ level, message, timestamp, service, responseTime, statusCode, latency, ...metadata }) => {
+    const hourOfDay = new Date(timestamp as string).getHours();
+
+    return JSON.stringify({
+      timestamp,
+      message,
+      service,
+      log_type: level,
+      hour_of_day: hourOfDay,
+      responseTime,
+      statusCode,
+      latency,
+      ...metadata,
+    });
+  }
+);
 
 const logger = winston.createLogger({
-    level: "info",
-    defaultMeta: {
-        serviceName: "catlog-service",
-    },
-    format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json(),
-    ),
-    transports: [
-        new winston.transports.File({
-            dirname: "logs",
-            filename: "combined.log",
-            level: "info",
-            silent: process.env.NODE_ENV === "test",
-        }),
-        new winston.transports.File({
-            dirname: "logs",
-            filename: "error.log",
-            level: "error",
-            silent: process.env.NODE_ENV === "test",
-        }),
-        new winston.transports.Console({
-            level: "info",
-            silent: process.env.NODE_ENV === "test",
-        }),
-    ],
+  level: "info",
+  format: format.combine(
+    format.timestamp({
+      format: "YYYY-MM-DD HH:mm:ss",
+    }),
+    format.errors({ stack: true }),
+    format.splat(),
+    customFormat
+  ),
+  defaultMeta: { service: "auth-service" },
+  transports: [
+    // Console Logs
+    new transports.Console({
+      level: "info",
+      format: format.combine(format.colorize(), customFormat),
+      silent: config.get("server.env") === "test",
+    }),
+
+    // Error Logs
+    new transports.File({
+      level: "error",
+      dirname: "logs",
+      filename: "error.log",
+      format: customFormat,
+      silent: config.get("server.env") === "test",
+    }),
+
+    // Combined Logs
+    new transports.File({
+      level: "info",
+      dirname: "logs",
+      filename: "combined.log",
+      format: customFormat,
+      silent: config.get("server.env") === "test",
+    }),
+  ],
 });
 
 export default logger;
