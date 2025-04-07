@@ -4,7 +4,7 @@
     "description": "A user management service",
     "main": "index.js",
     "scripts": {
-        "dev": "cross-env NODE_ENV=dev nodemon --legacy-watch src/server.ts",
+        "dev": "cross-env NODE_ENV=development nodemon --legacy-watch src/server.ts",
         "build": "tsc",
         "format:check": "prettier . --check",
         "format:fix": "prettier . --write",
@@ -20,7 +20,7 @@
         "mongoose",
         "mongodb",
         "express"
-     ],
+    ],
     "author": "Kunal Kharat <kunalkharat2004@gmail.com>",
     "license": "ISC",
     "lint-staged": {
@@ -30,15 +30,18 @@
         ]
     },
     "dependencies": {
+        "config": "^3.3.12",
         "cors": "^2.8.5",
         "cross-env": "^7.0.3",
         "express": "^5.1.0",
         "express-validator": "^7.2.1",
         "http-errors": "^2.0.0",
+        "js-yaml": "^4.1.0",
         "uuid": "^11.1.0",
         "winston": "^3.17.0"
     },
     "devDependencies": {
+        "@types/config": "^3.3.5",
         "@types/express": "^5.0.1",
         "@types/http-errors": "^2.0.4",
         "@types/jest": "^29.5.14",
