@@ -4,6 +4,7 @@ import { categoryValidator } from "./categoryValidator";
 import { handleValidationErrors } from "../common/middlewares/validate-schema";
 import { CatergoryService } from "./categoryService";
 import logger from "../config/logger";
+import { asyncWrapper } from "../common/utils/wrapper";
 
 const router = express.Router();
 
@@ -14,7 +15,7 @@ router.post(
     "/",
     categoryValidator,
     handleValidationErrors,
-    categoryController.create.bind(categoryController)
+    asyncWrapper(categoryController.create.bind(categoryController))
 );
 
 export default router;

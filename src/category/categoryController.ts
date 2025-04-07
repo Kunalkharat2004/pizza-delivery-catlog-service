@@ -11,7 +11,7 @@ class CategoryController {
     ){}
     
     async create(req: Request, res: Response, next: NextFunction) {
-     try{
+
         const {name, priceConfiguration, attributeConfiguration} = req.body;
         this.logger.info("Creating category", {name, priceConfiguration, attributeConfiguration});
         const category = await this.catergoryService.createCategory({name, priceConfiguration, attributeConfiguration});
@@ -20,15 +20,6 @@ class CategoryController {
             _id: category._id,
             message: "Category created successfully"
         });
-     }catch(err){
-        if(err instanceof Error){
-            next(createHttpError(500, err.message));
-            return;
-        }else{
-            next(createHttpError(500, "Failed to create category"));
-            return;
-        }
-     }
     }
 }
 
