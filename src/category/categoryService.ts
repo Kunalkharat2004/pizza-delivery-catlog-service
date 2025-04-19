@@ -29,4 +29,19 @@ export class CatergoryService{
         }
         return category;
     }
+
+    async updateCategory(categoryId: string, categoryData: ICategory){
+          // Check whether the categoryId is a valid MongoDB ObjectId
+          if(!mongoose.Types.ObjectId.isValid(categoryId)){
+            throw createHttpError(400, "Invalid category ID");
+        }
+        // Checks whether categoryId exists in DB
+        const isValidCategory = await Category.findById(categoryId);
+        if(!isValidCategory){
+            throw createHttpError(404,"Category doesn't exists");
+        }
+
+        const updatedCategory = await Category.findByIdAndUpdate(categoryId,categoryData,{new: true});
+        return updatedCategory;
+    }
 }

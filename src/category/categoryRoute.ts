@@ -35,4 +35,14 @@ router.get(
     asyncWrapper(categoryController.getSingleCategory.bind(categoryController))
 )
 
+// PATCH category by id
+router.patch(
+    "/:id",
+    authenticate,
+    canAccess([ROLES.ADMIN]),
+    categoryValidator,
+    handleValidationErrors,
+    asyncWrapper(categoryController.updateCategory.bind(categoryController))
+)
+
 export default router;
