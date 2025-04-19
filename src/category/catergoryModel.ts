@@ -1,16 +1,16 @@
-import mongoose from "mongoose"
-import { IAttributeConfiguration, IPriceConfiguration, ICategory } from "./categoryTypes";
-const priceConfigurationSchema = new mongoose.Schema<IPriceConfiguration>({
-    priceType: {
-        type: String,
-        enum: ["base","additional"],
-        required: true
-    },
+import mongoose from "mongoose";
+import { IAttributeConfiguration, ICategory, IPriceConfiguration } from "./categoryTypes";
 
-    availableOptions: {
-        type: [String],
-        required: true
-    }
+const priceConfigurationSchema = new mongoose.Schema<IPriceConfiguration>({
+   priceType:{
+    type: String,
+    enum:["base","additional"],
+    required: true
+   },
+   availableOptions:{
+    type: [String],
+    required: true
+   }
 })
 
 const attributeConfigurationSchema = new mongoose.Schema<IAttributeConfiguration>({
@@ -20,25 +20,24 @@ const attributeConfigurationSchema = new mongoose.Schema<IAttributeConfiguration
     },
     widgetType:{
         type: String,
-        enum:["radio","switch"],
-        required: true
+        enum:["base","radio"],
     },
     defaultValue:{
         type: mongoose.Schema.Types.Mixed,
         required: true
     },
-    availableOptions: {
+    availableOptions:{
         type: [String],
         required: true
     }
 })
 
 const categorySchema = new mongoose.Schema<ICategory>({
-    name: {
-        type: String,
+    name:{
+        type:String,
         required: true
     },
-    priceConfiguration: {
+    priceConfiguration:{
         type: Map,
         of: priceConfigurationSchema,
         required: true

@@ -21,6 +21,22 @@ class CategoryController {
             message: "Category created successfully"
         });
     }
+
+    async getCategories(req: Request, res: Response, next: NextFunction){
+        const categories = await this.catergoryService.getAllCategories();
+        res.json(categories);
+    }
+
+    async getSingleCategory(req: Request, res: Response, next: NextFunction){
+        const categoryId = req.params.id;
+        if(categoryId === undefined){
+            const error = createHttpError(404,"Category doesn't exists");
+            throw error;
+        }
+
+        const category = await this.catergoryService.getSingleCategory(categoryId);
+        res.json(category);
+    }
 }
 
 export default CategoryController;

@@ -23,4 +23,16 @@ router.post(
     asyncWrapper(categoryController.create.bind(categoryController))
 );
 
+// GET list of all categories
+router.get(
+    "/",
+    asyncWrapper(categoryController.getCategories.bind(categoryController))
+)
+
+// GET single category by id
+router.get(
+    "/:id",
+    asyncWrapper(categoryController.getSingleCategory.bind(categoryController))
+)
+
 export default router;
