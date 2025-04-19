@@ -44,4 +44,13 @@ export class CatergoryService{
         const updatedCategory = await Category.findByIdAndUpdate(categoryId,categoryData,{new: true});
         return updatedCategory;
     }
+
+    async deleteCategory(categoryId: string){
+          // Check whether the categoryId is a valid MongoDB ObjectId
+          if(!mongoose.Types.ObjectId.isValid(categoryId)){
+            throw createHttpError(400, "Invalid category ID");
+        }
+        // Checks whether categoryId exists in DB
+        return await Category.findByIdAndDelete(categoryId);
+    }
 }

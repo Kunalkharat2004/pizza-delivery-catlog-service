@@ -60,6 +60,16 @@ class CategoryController {
             updatedCategory
         })
     }
+
+    async deleteCategory(req: Request, res: Response){
+        const categoryId = req.params.id;
+        if (categoryId === undefined) {
+            const error = createHttpError(404, "Category doesn't exists");
+            throw error;
+        }
+        await this.catergoryService.deleteCategory(categoryId)
+        res.json({});
+    }
 }
 
 export default CategoryController;

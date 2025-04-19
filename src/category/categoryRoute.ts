@@ -45,4 +45,11 @@ router.patch(
     asyncWrapper(categoryController.updateCategory.bind(categoryController))
 )
 
+router.delete(
+    "/:id",
+    authenticate,
+    canAccess([ROLES.ADMIN]),
+    asyncWrapper(categoryController.deleteCategory.bind(categoryController))
+)
+
 export default router;
