@@ -25,18 +25,18 @@ const productSchema: Schema = {
             errorMessage: "Description cannot be empty",
         },
     },
-    // multer will put your file on req.file, so we just check for its presence:
-    // image: {
-    //     in: ["body"],
-    //     custom: {
-    //         options: (_value, { req }) => {
-    //             if (!req.file) {
-    //                 throw new Error("Image file is required");
-    //             }
-    //             return true;
-    //         },
-    //     },
-    // },
+    // express-fileuploader will put your file on req.file, so we just check for its presence:
+    image: {
+        in: ["body"],
+        custom: {
+            options: (_value, { req }) => {
+                if (!req.files) {
+                    throw new Error("Image file is required");
+                }
+                return true;
+            },
+        },
+    },
     priceConfiguration: {
         in: ["body"],
         exists: {

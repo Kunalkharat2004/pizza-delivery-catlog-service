@@ -3,7 +3,7 @@ import authenticate from "../common/middlewares/authenticate";
 import canAccess from "../common/middlewares/canAccess";
 import { ROLES } from "../common/constants";
 import { handleValidationErrors } from "../common/middlewares/validate-schema";
-import productValidationRules from "./createProductValidator";
+import productValidationRules from "./validator/createProductValidator";
 import { asyncWrapper } from "../common/utils/wrapper";
 import { ProductController } from "./productController";
 import { ProductService } from "./productService";
@@ -11,6 +11,7 @@ import fileUpload from "express-fileupload";
 import logger from "../config/logger";
 import { S3Storage } from "../common/services/S3Storage";
 import createHttpError from "http-errors";
+import updateValidationRules from "./validator/updateValidationRules";
 
 const router = Router();
 
@@ -38,6 +39,24 @@ router.post(
     productValidationRules,
     handleValidationErrors,
     asyncWrapper(productController.createProduct),
+);
+
+router.put(
+    "/:productId",
+    authenticate,
+    canAccess([ROLES.ADMIN]),
+    fileUpload({
+        limits: { fileSize: 500 * 1024 }, // 500 KB
+        abortOnLimit: true,
+        limitHandler: (req, res,next) => {
+            return next(
+                createHttpError(413, "File size limit has been reached"),
+            );
+        },
+    }),
+    updateValidationRules,
+    handleValidationErrors,
+    asyncWrapper(productController.updateProduct),
 );
 
 export default router;
