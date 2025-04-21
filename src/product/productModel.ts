@@ -39,6 +39,10 @@ const productSchema = new mongoose.Schema({
     },
     attributeConfiguration:{
         type: [attributeConfigurationSchema]
+    },
+    isPublished:{
+        type: Boolean,
+        default: false
     }
 },{timestamps: true});
 
