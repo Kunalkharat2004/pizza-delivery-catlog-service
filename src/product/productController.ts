@@ -16,7 +16,7 @@ export class ProductController {
 
     createProduct = async(req: Request, res: Response, next: NextFunction) =>{
         // Validate the request body
-        const {name, description,image,priceConfiguration,attributeConfiguration} = req.body;
+        const {name, description,image,priceConfiguration,attributeConfiguration, tenantId, categoryId} = req.body;
 
         // Upload the image to cloud storage
         const file = req.files?.image as UploadedFile;
@@ -38,7 +38,9 @@ export class ProductController {
             description,
             image: fileName,
             priceConfiguration,
-            attributeConfiguration
+            attributeConfiguration,
+            tenantId,
+            categoryId
         }
         
         const createdProduct = await this.productService.createProduct(product);
@@ -54,6 +56,15 @@ export class ProductController {
     updateProduct = async(req: Request, res: Response, next: NextFunction) =>{
         
         const {productId} = req.params;
+
+        if(req.auth?.role !== "admin"){
+            // Check if the user is authorized to update the product
+        const product = await this.productService.getProductById(productId);
+        const tenant = req.auth?.tenantId;
+        if(tenant !== product.tenantId){
+            return next(createHttpError(403, "You are not authorized to update this product"));
+        }
+        }
 
         // Check whether image is present in the request
         let oldImage: string | undefined;
@@ -82,16 +93,18 @@ export class ProductController {
             this.logger.info("Old image deleted successfully", {oldImage});
         }
 
-        const {name, description, priceConfiguration, attributeConfiguration} = req.body;
+        const {name, description, priceConfiguration, attributeConfiguration, tenantId, categoryId} = req.body;
 
-        const product = {
+        const productToUpdate = {
             name,
             description,
             priceConfiguration,
             attributeConfiguration,
-            image: newImage || oldImage
+            image: newImage || oldImage,
+            tenantId,
+            categoryId
         }
-        const updatedProduct = await this.productService.updateProduct(productId, product);
+        const updatedProduct = await this.productService.updateProduct(productId, productToUpdate);
         this.logger.info("Product updated successfully",{updatedProduct});
 
         res.status(200).json({

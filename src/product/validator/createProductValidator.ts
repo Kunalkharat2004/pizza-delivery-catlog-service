@@ -132,6 +132,32 @@ const productSchema: Schema = {
             },
         }
     },
+
+    tenantId: {
+        in: ["body"],
+        exists: {
+            errorMessage: "tenantId is required",
+        },
+        isString: {
+            errorMessage: "tenantId must be a string",
+        },
+        notEmpty: {
+            errorMessage: "tenantId cannot be empty",
+        },
+    },
+
+    categoryId: {
+        in: ["body"],
+        exists: {
+            errorMessage: "categoryId is required",
+        },
+        isString: {
+            errorMessage: "categoryId must be a string",
+        },
+        notEmpty: {
+            errorMessage: "categoryId cannot be empty",
+        },
+    }
 };
 
 const productValidationRules = checkSchema(productSchema);

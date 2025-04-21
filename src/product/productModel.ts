@@ -40,6 +40,17 @@ const productSchema = new mongoose.Schema({
     attributeConfiguration:{
         type: [attributeConfigurationSchema]
     },
+
+    tenantId:{
+        type: String,
+        required: true
+    },
+
+    categoryId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
+        required: true
+    },
     isPublished:{
         type: Boolean,
         default: false

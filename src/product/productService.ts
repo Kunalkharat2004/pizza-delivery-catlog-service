@@ -30,4 +30,12 @@ export class ProductService {
         }
         return updatedProduct;
     }
+
+    getProductById = async(productId: string) =>{
+        const product = await productModel.findById(productId);
+        if(!product){
+            throw new Error("Product not found");
+        }
+        return product;
+    }
 }
