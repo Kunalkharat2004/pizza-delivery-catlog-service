@@ -9,7 +9,7 @@ class CategoryController {
         private readonly logger: Logger,
     ) {}
 
-    async create(req: Request, res: Response, next: NextFunction) {
+    create = async (req: Request, res: Response, next: NextFunction) => {
         const { name, priceConfiguration, attributeConfiguration } = req.body;
         this.logger.info("Creating category", {
             name,
@@ -28,12 +28,12 @@ class CategoryController {
         });
     }
 
-    async getCategories(req: Request, res: Response, next: NextFunction) {
+    getCategories = async (req: Request, res: Response, next: NextFunction) => {
         const categories = await this.catergoryService.getAllCategories();
         res.json(categories);
     }
 
-    async getSingleCategory(req: Request, res: Response, next: NextFunction) {
+    getSingleCategory = async (req: Request, res: Response, next: NextFunction) => {
         const categoryId = req.params.id;
         if (categoryId === undefined) {
             const error = createHttpError(404, "Category doesn't exists");
@@ -45,7 +45,7 @@ class CategoryController {
         res.json(category);
     }
 
-    async updateCategory(req: Request, res: Response) {
+    updateCategory = async (req: Request, res: Response) => {
         const categoryId = req.params.id;
         const { name, priceConfiguration, attributeConfiguration } = req.body;
 
@@ -61,7 +61,7 @@ class CategoryController {
         })
     }
 
-    async deleteCategory(req: Request, res: Response){
+    deleteCategory = async (req: Request, res: Response) => {
         const categoryId = req.params.id;
         if (categoryId === undefined) {
             const error = createHttpError(404, "Category doesn't exists");

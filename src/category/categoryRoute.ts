@@ -20,19 +20,19 @@ router.post(
     canAccess([ROLES.ADMIN]),
     categoryValidator,
     handleValidationErrors,
-    asyncWrapper(categoryController.create.bind(categoryController))
+    asyncWrapper(categoryController.create)
 );
 
 // GET list of all categories
 router.get(
     "/",
-    asyncWrapper(categoryController.getCategories.bind(categoryController))
+    asyncWrapper(categoryController.getCategories)
 )
 
 // GET single category by id
 router.get(
     "/:id",
-    asyncWrapper(categoryController.getSingleCategory.bind(categoryController))
+    asyncWrapper(categoryController.getSingleCategory)
 )
 
 // PATCH category by id
@@ -42,14 +42,14 @@ router.patch(
     canAccess([ROLES.ADMIN]),
     categoryValidator,
     handleValidationErrors,
-    asyncWrapper(categoryController.updateCategory.bind(categoryController))
+    asyncWrapper(categoryController.updateCategory)
 )
 
 router.delete(
     "/:id",
     authenticate,
     canAccess([ROLES.ADMIN]),
-    asyncWrapper(categoryController.deleteCategory.bind(categoryController))
+    asyncWrapper(categoryController.deleteCategory)
 )
 
 export default router;

@@ -46,6 +46,6 @@ const categorySchema = new mongoose.Schema<ICategory>({
         type: [attributeConfigurationSchema],
         required: true
     }
-})
+},{timestamps: true});
 
 export default mongoose.model("Category",categorySchema);
