@@ -1,0 +1,16 @@
+{
+    "Size":{
+        "priceType":"base",
+        "availableOptions": {
+            "Small": 399,
+            "Medium": 499,
+            "Large": 599
+        }
+    },
+    "Crust":{
+        "priceType":"additional",
+        "availableOptions":{
+            "Medium": 29,
+            "Thick": 39
+        }}
+}
