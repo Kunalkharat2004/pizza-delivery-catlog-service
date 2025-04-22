@@ -14,3 +14,15 @@ export interface FilterData {
     categoryId?: mongoose.Types.ObjectId;
     isPublished?: boolean;
 }
+
+export interface IPaginateOptions {
+    page: number;
+    limit: number;
+}
+
+export interface ICustomPaginateLabels {
+    docs: string;
+    totalDocs: string;
+    limit: string;
+    page: string;
+}

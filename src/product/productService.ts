@@ -1,5 +1,5 @@
 import productModel from "./productModel"
-import { FilterData, IProduct } from "./productTypes";
+import { FilterData, IPaginateOptions, IProduct } from "./productTypes";
 
 export class ProductService {
     
@@ -39,7 +39,7 @@ export class ProductService {
         return product;
     }
 
-    getProducts = async (q:string,filtersData: FilterData) =>{
+    getProducts = async (q:string,filtersData: FilterData, paginateOptions: IPaginateOptions) =>{
 
         const searchQueryRegexp = new RegExp(q as string, "i");
 
@@ -72,9 +72,13 @@ export class ProductService {
             {
                 $unwind: "$category",
             }
-        ])
+        ]);
 
-        const result = await aggregate.exec();
+        const result = await productModel.aggregatePaginate(
+            aggregate,
+            paginateOptions,
+            
+        );
         if(!result){
             throw new Error("No products found");
         }

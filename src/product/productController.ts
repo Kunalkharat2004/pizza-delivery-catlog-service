@@ -8,6 +8,7 @@ import { FileStorage } from "../common/types/storage";
 import createHttpError from "http-errors";
 import { FilterData } from "./productTypes";
 import mongoose from "mongoose";
+import { customPaginateLabels } from "../config/customPaginateLabels";
 
 export class ProductController {
     constructor(
@@ -132,7 +133,13 @@ export class ProductController {
             filters.categoryId = new mongoose.Types.ObjectId(categoryId as string);
         }
 
-        const products = await this.productService.getProducts(q as string,filters);
+        const paginateOptions = {
+            page: Number(req.query.page) || 1,
+            limit: Number(req.query.limit) || 10,
+            customLabels: customPaginateLabels
+        }
+
+        const products = await this.productService.getProducts(q as string, filters, paginateOptions);
 
         res.json(products);
     }
