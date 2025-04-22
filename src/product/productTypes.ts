@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 
 export interface IProduct {
     name: string;
@@ -5,4 +6,11 @@ export interface IProduct {
     image: string;
     priceConfiguration: string;
     attributeConfiguration: string;
+}
+
+export interface FilterData {
+    q?: string;
+    tenantId?: string;
+    categoryId?: mongoose.Types.ObjectId;
+    isPublished?: boolean;
 }

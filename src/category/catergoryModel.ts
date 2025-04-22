@@ -20,7 +20,7 @@ const attributeConfigurationSchema = new mongoose.Schema<IAttributeConfiguration
     },
     widgetType:{
         type: String,
-        enum:["base","radio"],
+        enum:["switch","radio"],
     },
     defaultValue:{
         type: mongoose.Schema.Types.Mixed,

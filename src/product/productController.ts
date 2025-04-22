@@ -6,6 +6,8 @@ import {v4 as uuidv4} from "uuid";
 import { ProductService } from "./productService";
 import { FileStorage } from "../common/types/storage";
 import createHttpError from "http-errors";
+import { FilterData } from "./productTypes";
+import mongoose from "mongoose";
 
 export class ProductController {
     constructor(
@@ -112,5 +114,26 @@ export class ProductController {
             _id: updatedProduct._id
         })
 
+    }
+
+    getProducts = async (req: Request, res: Response,next: NextFunction) =>{
+        
+        const {q, tenantId, categoryId, isPublished} = req.query;
+
+        let filters: FilterData = {};
+
+        if(isPublished){
+            filters.isPublished = isPublished === "true" ? true : false;
+        }
+        if(tenantId){
+            filters.tenantId = tenantId as string;
+        }
+        if(categoryId){
+            filters.categoryId = new mongoose.Types.ObjectId(categoryId as string);
+        }
+
+        const products = await this.productService.getProducts(q as string,filters);
+
+        res.json(products);
     }
 }

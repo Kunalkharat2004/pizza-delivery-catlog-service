@@ -1,5 +1,5 @@
 import productModel from "./productModel"
-import { IProduct } from "./productTypes";
+import { FilterData, IProduct } from "./productTypes";
 
 export class ProductService {
     
@@ -37,5 +37,47 @@ export class ProductService {
             throw new Error("Product not found");
         }
         return product;
+    }
+
+    getProducts = async (q:string,filtersData: FilterData) =>{
+
+        const searchQueryRegexp = new RegExp(q as string, "i");
+
+        const matchedQuery = {
+            ...filtersData,
+            name: searchQueryRegexp,
+        }
+
+        const aggregate = productModel.aggregate([
+            {
+                $match: matchedQuery
+            },
+            {
+                $lookup:{
+                    from: "categories",
+                    localField: "categoryId",
+                    foreignField: "_id",
+                    as: "category",
+                    pipeline:[
+                        {
+                            $project:{
+                                _id: 1,
+                                name: 1,
+                                attributeConfiguration: 1,
+                            }
+                        }
+                    ]
+                },             
+            },
+            {
+                $unwind: "$category",
+            }
+        ])
+
+        const result = await aggregate.exec();
+        if(!result){
+            throw new Error("No products found");
+        }
+        return result;
     }
 }
