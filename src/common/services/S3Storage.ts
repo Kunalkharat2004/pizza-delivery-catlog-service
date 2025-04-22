@@ -36,8 +36,14 @@ export class S3Storage implements FileStorage {
         await this.client.send(new DeleteObjectCommand(params));
         return;
     }
-    async getObjectUri(fileName: string): Promise<string> {
-        // Implementation for getting the object URI from S3
-        return `https://your-s3-bucket-url/${fileName}`;
+    getObjectUri(fileName: string):string {
+
+        // Example URL format:
+        // https://mern-pizza-app.s3.ap-south-1.amazonaws.com/c5705def-03c6-4a2e-9b46-73a1a8a93123
+
+        const bucket = config.get("s3.bucket") as string;
+        const region = config.get("s3.region") as string;
+        const url = `https://${bucket}.s3.${region}.amazonaws.com/${fileName}`;
+        return url;
     }
 }

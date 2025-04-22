@@ -6,7 +6,7 @@ import {v4 as uuidv4} from "uuid";
 import { ProductService } from "./productService";
 import { FileStorage } from "../common/types/storage";
 import createHttpError from "http-errors";
-import { FilterData } from "./productTypes";
+import { FilterData, IProduct } from "./productTypes";
 import mongoose from "mongoose";
 import { customPaginateLabels } from "../config/customPaginateLabels";
 
@@ -26,7 +26,7 @@ export class ProductController {
         if (!file) {
            return next(createHttpError(400, "Image file is required"));
         }
-        const fileName = uuidv4() + "-" + file.name;
+        const fileName = uuidv4();
         const fileData = file.data.buffer;
 
         await this.storage.upload({
@@ -79,7 +79,7 @@ export class ProductController {
             
             // Upload the new image to cloud storage
             const file = req.files?.image as UploadedFile;
-            const fileName = uuidv4() + "-" + file.name;
+            const fileName = uuidv4();
             const fileData = file.data.buffer;
             newImage = fileName;
             
@@ -141,6 +141,17 @@ export class ProductController {
 
         const products = await this.productService.getProducts(q as string, filters, paginateOptions);
 
-        res.json(products);
+        const finalProucts = (products.data as IProduct[]).map((product)=>({
+            ...product,
+            image: this.storage.getObjectUri(product.image),   
+        }))
+   
+
+        res.json({
+            data: finalProucts,
+            total: products.total,
+            perPage: products.perPage,
+            currentPage: products.currentPage,
+        });
     }
 }

@@ -77,7 +77,6 @@ export class ProductService {
         const result = await productModel.aggregatePaginate(
             aggregate,
             paginateOptions,
-            
         );
         if(!result){
             throw new Error("No products found");
