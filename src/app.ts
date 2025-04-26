@@ -3,6 +3,7 @@ import { globalErrorHandler } from "./common/middlewares/globalErrorHandler";
 import categoryRoute from "./category/categoryRoute";
 import cookieParser from "cookie-parser";
 import productRoute from "./product/productRoute";
+import toppingsRoute from "./toppings/toppingsRoute";
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/categories", categoryRoute);
 app.use("/api/products", productRoute);
+app.use("/api/toppings", toppingsRoute);
 
 app.use(globalErrorHandler);
 

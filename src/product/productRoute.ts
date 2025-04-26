@@ -26,7 +26,7 @@ const productController = new ProductController(
 router.post(
     "/",
     authenticate,
-    canAccess([ROLES.ADMIN]),
+    canAccess([ROLES.ADMIN,ROLES.MANAGER]),
     fileUpload({
         limits: { fileSize: 500 * 1024 }, // 500 KB
         abortOnLimit: true,
