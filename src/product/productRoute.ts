@@ -60,10 +60,23 @@ router.put(
 );
 
 // Get list of products
-
 router.get(
     "/",
     asyncWrapper(productController.getProducts),
+)
+
+// GET product by id
+router.get(
+    "/:productId",
+    asyncWrapper(productController.getProductById),
+)
+
+// DELETE product by id
+router.delete(
+    "/:productId",
+    authenticate,
+    canAccess([ROLES.ADMIN,ROLES.MANAGER]),
+    asyncWrapper(productController.deleteProduct),
 )
 
 export default router;

@@ -6,6 +6,9 @@ export interface IProduct {
     image: string;
     priceConfiguration: string;
     attributeConfiguration: string;
+    tenantId: string;
+    categoryId: mongoose.Types.ObjectId;
+    isPublished: boolean;
 }
 
 export interface FilterData {
