@@ -1,7 +1,8 @@
 import createHttpError from "http-errors";
-import { IProduct } from "../product/productTypes";
+import {  IProduct } from "../product/productTypes";
 import toppingsModel from "./toppingsModel";
-import { IToppings } from "./toppingsTypes";
+import { IToppings, ToppingFilters } from "./toppingsTypes";
+import { IPaginateOptions } from "../common/types";
 
 export class ToppingService {
     
@@ -32,5 +33,27 @@ export class ToppingService {
             throw new Error("Failed to update topping");
         }
         return updatedTopping;
+    }
+
+    getToppings = async(
+        q:string,
+         filterData: ToppingFilters,
+         paginateOptions: IPaginateOptions
+    ) =>{
+        const searchQuery = new RegExp(q as string, "i");
+        const matchedQuery = {
+            name: searchQuery,
+            ...filterData
+        }
+
+        const aggregate = toppingsModel.aggregate([
+            {
+                $match: matchedQuery
+            }
+        ]);
+
+        const toppings = await toppingsModel.aggregatePaginate(aggregate, paginateOptions)
+
+        return toppings;
     }
 }

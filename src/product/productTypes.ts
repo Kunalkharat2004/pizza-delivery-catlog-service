@@ -18,10 +18,6 @@ export interface FilterData {
     isPublished?: boolean;
 }
 
-export interface IPaginateOptions {
-    page: number;
-    limit: number;
-}
 
 export interface ICustomPaginateLabels {
     docs: string;

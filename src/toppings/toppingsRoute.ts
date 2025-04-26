@@ -56,5 +56,11 @@ router.patch(
     asyncWrapper(toppingsController.updateTopping),
 )
 
+// GET toppings
+router.get(
+    "/",
+    asyncWrapper(toppingsController.getToppings),
+)
+
 
 export default router;

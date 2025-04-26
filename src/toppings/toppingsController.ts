@@ -6,6 +6,8 @@ import { FileStorage } from "../common/types/storage";
 import { Logger } from "winston";
 import { ToppingService } from "./toppingService";
 import createHttpError from "http-errors";
+import { ToppingFilters } from "./toppingsTypes";
+import { customPaginateLabels } from "../config/customPaginateLabels";
 
 export class ToppingsController {
     constructor(
@@ -104,5 +106,31 @@ export class ToppingsController {
             msg:"Topping updated successfully",
             _id: updatedTopping._id
         })
+    }
+
+    getToppings = async(req: Request, res: Response) => {
+        
+        const {q,tenantId,isPublished, page,limit} = req.query;
+        const filters: ToppingFilters = {};
+
+        if(isPublished){
+            filters.isPublished = isPublished === "true" ? true : false;
+        }
+        if(tenantId){
+            filters.tenantId = tenantId as string;
+        }
+        const paginateOptions = {
+            page: req.query.page ? parseInt(page as string) : 1,
+            limit: req.query.limit ? parseInt(limit as string) : 10,
+            customLabels: customPaginateLabels
+          };
+
+        const toppings = await this.toppingService.getToppings(
+            q as string,
+            filters,
+            paginateOptions
+        );
+
+        res.json(toppings);
     }
 } 

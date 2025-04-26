@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import productModel from "./productModel";
-import { FilterData, IPaginateOptions, IProduct } from "./productTypes";
+import { FilterData, IProduct } from "./productTypes";
+import { IPaginateOptions } from "../common/types";
 
 export class ProductService {
     createProduct = async (product: IProduct) => {

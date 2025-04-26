@@ -11,3 +11,8 @@ export interface AuthRequest extends Request {
       jti: string;
     };
   }
+
+  export interface IPaginateOptions {
+    page: number;
+    limit: number;
+}
