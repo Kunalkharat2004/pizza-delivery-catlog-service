@@ -52,6 +52,12 @@ export class ToppingsController {
     updateTopping = async(req: Request, res: Response, next: NextFunction) => {
 
         const {toppingId} = req.params;
+
+        const toppingExists = await this.toppingService.getToppingById(toppingId);
+        if(!toppingExists){
+            return next(createHttpError(404,"Topping not found"));
+        }
+
         if(req.auth?.role !== "admin"){
 
             const topping = await this.toppingService.getToppingById(toppingId);
@@ -132,5 +138,46 @@ export class ToppingsController {
         );
 
         res.json(toppings);
+    }
+
+    getToppingById = async(req: Request, res: Response, next:NextFunction) => {
+        const {toppingId} = req.params;
+        const topping = await this.toppingService.getToppingById(toppingId);
+
+        if(!topping){
+            return next(createHttpError(404,"Topping not found"));
+        }
+
+        res.json(topping);
+    }
+
+    deleteTopping = async(req: Request, res: Response, next: NextFunction) => {
+
+        const {toppingId} = req.params;
+        const topping = await this.toppingService.getToppingById(toppingId);
+        if(!topping){
+            return next(createHttpError(404,"Topping not found"));
+        }
+        if(req.auth?.role !== "admin"){
+            const tenant = req.auth?.tenantId;
+            if(tenant !== topping.tenantId){
+                return next(createHttpError(
+                    403,
+                    "You are not authorized to delete this topping",
+                ));
+            }
+        }
+
+        // delete the topping image from cloud storage
+        const image = await this.toppingService.getToppingImage(toppingId);
+        if(image){
+            await this.storage.delete(image);
+        }
+        this.logger.info("Topping image deleted successfully");
+
+        await this.toppingService.deleteTopping(toppingId);
+        this.logger.info("Topping deleted successfully");
+
+        res.json({});
     }
 } 

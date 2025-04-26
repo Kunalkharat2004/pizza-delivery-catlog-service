@@ -62,5 +62,19 @@ router.get(
     asyncWrapper(toppingsController.getToppings),
 )
 
+// GET topping by id
+router.get(
+    "/:toppingId",
+    asyncWrapper(toppingsController.getToppingById),
+)
+
+// DELETE topping
+router.delete(
+    "/:toppingId",
+    authenticate,
+    canAccess([ROLES.ADMIN, ROLES.MANAGER]),
+    asyncWrapper(toppingsController.deleteTopping),
+)
+
 
 export default router;

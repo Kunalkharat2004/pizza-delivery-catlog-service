@@ -67,6 +67,10 @@ export class ProductController {
 
     updateProduct = async (req: Request, res: Response, next: NextFunction) => {
         const { productId } = req.params;
+        const product = await this.productService.getProductById(productId);
+        if (!product) {
+            return next(createHttpError(404, "Product not found"));
+        }
 
         if (req.auth?.role !== "admin") {
             // Check if the user is authorized to update the product
@@ -198,6 +202,10 @@ export class ProductController {
         const { productId } = req.params;
         if (!productId) {
             return next(createHttpError(400, "Product ID is required"));
+        }
+        const product = await this.productService.getProductById(productId);
+        if (!product) {
+            return next(createHttpError(404, "Product not found"));
         }
         if (req.auth?.role !== "admin") {
             const product = await this.productService.getProductById(productId);
