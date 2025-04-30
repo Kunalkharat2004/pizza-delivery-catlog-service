@@ -1,21 +1,96 @@
-{
-    "name":"Pizza",
-    "priceConfiguration":{
-       "Size":{
-        "priceType":"base",
-        "availableOptions": ["Small","Medium","Large"]
-       },
-       "Crust":{
-        "priceType":"additional",
-        "availableOptions": ["Thin","Thick"]
-       }
+[
+    {
+        "name":"Pizza",
+        "priceConfiguration":{
+           "Size":{
+            "priceType":"base",
+            "availableOptions": ["Small","Medium","Large"]
+           },
+           "Crust":{
+            "priceType":"additional",
+            "availableOptions": ["Thin","Thick"]
+           }
+        },
+        "attributeConfiguration": [
+            {
+                "name":"isHit",
+                "widgetType":"switch",
+                "defaultValue":"Yes",
+                "availableOptions":["Yes","No"]
+            }
+        ]
     },
-    "attributeConfiguration": [
-        {
-            "name":"isHit",
-            "widgetType":"switch",
-            "defaultValue":"Yes",
-            "availableOptions":["Yes","No"]
-        }
-    ]
-}
+    {
+        "name": "Burger",
+        "priceConfiguration": {
+            "Size": {
+                "priceType": "base",
+                "availableOptions": ["Regular", "Double", "Jumbo"]
+            },
+            "Patty":{
+                "priceType": "additional",
+                "availableOptions": ["Classic", "Premium"]
+            },
+            "AddCheese": {
+                "priceType": "additional",
+                "availableOptions": ["None", "American", "Cheddar", "Swiss", "Blue"]
+            },
+            "AddBacon": {
+                "priceType": "additional",
+                "availableOptions": ["None", "Regular", "Extra Crispy"]
+            },
+            "BunType": {
+                "priceType": "additional",
+                "availableOptions": ["Regular", "Sesame", "Brioche", "Gluten-Free", "Lettuce Wrap"]
+            }
+        },
+        "attributeConfiguration": [
+            {
+                "name": "isHit",
+                "widgetType": "switch",
+                "defaultValue": "No",
+                "availableOptions": ["Yes", "No"]
+            },
+            {
+                "name": "SpiceLevel",
+                "widgetType": "radio",
+                "defaultValue": "Medium",
+                "availableOptions": ["Mild", "Medium", "Spicy", "Extra Spicy"]
+            },
+            {
+                "name": "isVegetarian",
+                "widgetType": "switch",
+                "defaultValue": "No",
+                "availableOptions": ["Yes", "No"]
+            }
+        ]
+    },
+
+    {
+        "name":"Beverages",
+        "priceConfiguration":{
+            "Size":{
+                "priceType":"base",
+                "availableOptions": ["100ml","330ml","500ml"]
+            },
+            "Chilling":{
+                "priceType":"additional",
+                "availableOptions": ["Chilled","Normal"]
+            }
+        },
+        "attributeConfiguration": [
+            {
+                "name":"isHit",
+                "widgetType":"switch",
+                "defaultValue":"Yes",
+                "availableOptions":["Yes","No"]
+            },
+            {
+                "name":"isAlcoholic",
+                "widgetType":"radio",
+                "defaultValue":"Non-Alcoholic",
+                "availableOptions":["Alcoholic","Non-Alcoholic"]
+            }
+        ]
+    }
+]

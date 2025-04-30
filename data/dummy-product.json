@@ -1,16 +1,123 @@
-{
-    "Size":{
-        "priceType":"base",
-        "availableOptions": {
-            "Small": 399,
-            "Medium": 499,
-            "Large": 599
-        }
+[
+  {  
+    "priceConfiguration": {
+        "Size":{
+            "priceType":"base",
+            "availableOptions": {
+                "Small": 399,
+                "Medium": 499,
+                "Large": 599
+            }
+        },
+        "Crust":{
+            "priceType":"additional",
+            "availableOptions":{
+                "Medium": 29,
+                "Thick": 39
+            }}
     },
-    "Crust":{
-        "priceType":"additional",
-        "availableOptions":{
-            "Medium": 29,
-            "Thick": 39
-        }}
-}
+    "attributeConfiguration": [
+        {
+            "name":"isHit",
+            "value":true
+        },
+        {
+            "name":"Spiciness",
+            "value":"Hot"
+        },
+        {
+            "name":"isVegetarian",
+            "value":"true"
+        }
+    ]
+
+},
+{  
+    "priceConfiguration": {
+        "Size":{
+            "priceType":"base",
+            "availableOptions": {
+                "Regular": 129,
+                "Double": 169,
+                "Jumbo": 209
+            }
+        },
+        "Patty":{
+            "priceType":"additional",
+            "availableOptions":{
+                "Classic": 29,
+                "Premium": 49
+            }},
+        "AddCheese": {
+            "priceType":"additional",
+            "availableOptions":{
+                "None": 0,
+                "American": 10,
+                "Cheddar": 15,
+                "Swiss": 20,
+                "Blue": 25
+            }},
+        "AddBacon": {
+            "priceType":"additional",
+            "availableOptions":{
+                "None": 0,
+                "Regular": 20,
+                "Extra Crispy": 30
+            }},
+        "BunType": {
+            "priceType":"additional",
+            "availableOptions":{
+                "Regular": 0,
+                "Sesame": 5,
+                "Brioche": 10,
+                "Gluten-Free": 15,
+                "Lettuce Wrap": 20
+            }}
+    },
+    "attributeConfiguration": [
+        {
+            "name":"isHit",
+            "value":true
+        },
+        {
+            "name":"SpiceLevel",
+            "value":"Medium"
+        },
+        {
+            "name":"isVegetarian",
+            "value":"false"
+        }
+    ]
+},
+
+    
+    {
+        "priceConfiguration":{
+            "Size": {
+            "priceType": "base",
+            "availableOptions": {
+                "250ml": 125,
+                "330ml": 160,
+                "500ml": 220
+            }
+        },
+        "Chilling": {
+            "priceType": "additional",
+            "availableOptions": {
+                "Chilled": 15,
+                "Normal": 0
+            }
+        }
+        },
+        "attributeConfiguration": [
+            {
+                "name":"isHit",
+                "value":true
+            },
+            {
+                "name": "isAlcoholic",
+                "value": "Non-Alcoholic"
+            }
+        ]
+    }
+]
