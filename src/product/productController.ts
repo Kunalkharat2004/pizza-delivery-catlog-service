@@ -119,6 +119,7 @@ export class ProductController {
             attributeConfiguration,
             tenantId,
             categoryId,
+            isPublished
         } = req.body;
 
         const productToUpdate = {
@@ -129,6 +130,7 @@ export class ProductController {
             image: newImage || oldImage,
             tenantId,
             categoryId,
+            isPublished,
         };
         const updatedProduct = await this.productService.updateProduct(
             productId,
@@ -170,6 +172,8 @@ export class ProductController {
             filters,
             paginateOptions,
         );
+
+        console.log
 
         const finalProucts = (products.data as IProduct[]).map((product) => ({
             ...product,

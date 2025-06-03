@@ -64,6 +64,7 @@ export class ProductService {
                 $unwind: "$category",
             },
         ]);
+
         if (!product) {
             throw new Error("Product not found");
         }
@@ -106,6 +107,11 @@ export class ProductService {
             {
                 $unwind: "$category",
             },
+            {
+                $sort: {
+                    createdAt: -1, // Sort by creation date in descending order
+                }
+            }
         ]);
 
         const result = await productModel.aggregatePaginate(

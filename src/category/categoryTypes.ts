@@ -6,14 +6,14 @@ export interface IPriceConfiguration {
    }
    
 export interface IAttributeConfiguration {
-       name: String,
+       name: string,
        widgetType: "radio" | "switch",
        defaultValue: string,
        availableOptions: Array<string>
    }
    
 export interface ICategory {
-       name: String,
+       name: string,
        priceConfiguration: IPriceConfiguration,
        attributeConfiguration: Array<IAttributeConfiguration>
    }
