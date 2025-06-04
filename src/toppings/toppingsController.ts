@@ -1,24 +1,23 @@
-import {Request} from "express-jwt";
+import { Request } from "express-jwt";
 import { v4 as uuidv4 } from "uuid";
-import { NextFunction, Response } from 'express';
+import { NextFunction, Response } from "express";
 import { UploadedFile } from "express-fileupload";
 import { FileStorage } from "../common/types/storage";
 import { Logger } from "winston";
 import { ToppingService } from "./toppingService";
 import createHttpError from "http-errors";
-import { ToppingFilters } from "./toppingsTypes";
+import { IToppings, ToppingFilters } from "./toppingsTypes";
 import { customPaginateLabels } from "../config/customPaginateLabels";
 
 export class ToppingsController {
     constructor(
         private toppingService: ToppingService,
         private storage: FileStorage,
-        private logger: Logger
-    ){}
+        private logger: Logger,
+    ) {}
 
-    createTopping = async(req: Request, res: Response) => {
-
-        const {name,image,price,tenantId,isPublished} = req.body;
+    createTopping = async (req: Request, res: Response) => {
+        const { name, image, price, tenantId, isPublished } = req.body;
 
         // Upload the topping image to cloud storage
         const file = req.files?.image as UploadedFile;
@@ -28,7 +27,7 @@ export class ToppingsController {
         await this.storage.upload({
             fileName,
             fileData,
-        })
+        });
 
         this.logger.info("Image uploaded successfully", { fileName });
 
@@ -47,36 +46,37 @@ export class ToppingsController {
             msg: "Topping created successfully",
             _id: createdTopping._id,
         });
-    }
+    };
 
-    updateTopping = async(req: Request, res: Response, next: NextFunction) => {
+    updateTopping = async (req: Request, res: Response, next: NextFunction) => {
+        const { toppingId } = req.params;
 
-        const {toppingId} = req.params;
-
-        const toppingExists = await this.toppingService.getToppingById(toppingId);
-        if(!toppingExists){
-            return next(createHttpError(404,"Topping not found"));
+        const toppingExists =
+            await this.toppingService.getToppingById(toppingId);
+        if (!toppingExists) {
+            return next(createHttpError(404, "Topping not found"));
         }
 
-        if(req.auth?.role !== "admin"){
-
+        if (req.auth?.role !== "admin") {
             const topping = await this.toppingService.getToppingById(toppingId);
             const tenant = req.auth?.tenantId;
-            if(tenant !== topping.tenantId){
-                return next(createHttpError(
-                    403,
-                    "You are not authorized to update this topping",
-                ));
+            if (tenant !== topping.tenantId) {
+                return next(
+                    createHttpError(
+                        403,
+                        "You are not authorized to update this topping",
+                    ),
+                );
             }
         }
-        const {name,image,price,tenantId,isPublished} = req.body;
+        const { name, image, price, tenantId, isPublished } = req.body;
 
-        let oldImage: string | undefined; 
-        let newImage: string | undefined; 
+        let oldImage: string | undefined;
+        let newImage: string | undefined;
 
         oldImage = await this.toppingService.getToppingImage(toppingId);
 
-        if(req.files?.image){
+        if (req.files?.image) {
             const file = req.files?.image as UploadedFile;
             const fileName = uuidv4();
             newImage = fileName;
@@ -85,12 +85,12 @@ export class ToppingsController {
             // Upload the new image to cloud storage
             await this.storage.upload({
                 fileName,
-                fileData
-            })
+                fileData,
+            });
             this.logger.info("Image uploaded successfully");
 
             // Delete the old Image from cloud Storage
-            if(oldImage){
+            if (oldImage) {
                 await this.storage.delete(oldImage);
             }
             this.logger.info("Old image deleted successfull from cloud");
@@ -101,76 +101,92 @@ export class ToppingsController {
             image: newImage ?? oldImage,
             price,
             tenantId,
-            isPublished: isPublished === "true"? true: false
-        }
+            isPublished: isPublished === "true" ? true : false,
+        };
 
-        const updatedTopping = await this.toppingService.updateTopping(toppingId,topping);
+        const updatedTopping = await this.toppingService.updateTopping(
+            toppingId,
+            topping,
+        );
 
         this.logger.info(`Topping updated successfully: ${updatedTopping._id}`);
 
         res.json({
-            msg:"Topping updated successfully",
-            _id: updatedTopping._id
-        })
-    }
+            msg: "Topping updated successfully",
+            _id: updatedTopping._id,
+        });
+    };
 
-    getToppings = async(req: Request, res: Response) => {
-        
-        const {q,tenantId,isPublished, page,limit} = req.query;
+    getToppings = async (req: Request, res: Response) => {
+        const { q, tenantId, isPublished, page, limit } = req.query;
         const filters: ToppingFilters = {};
 
-        if(isPublished){
+        if (isPublished) {
             filters.isPublished = isPublished === "true" ? true : false;
         }
-        if(tenantId){
+        if (tenantId) {
             filters.tenantId = tenantId as string;
         }
         const paginateOptions = {
             page: req.query.page ? parseInt(page as string) : 1,
             limit: req.query.limit ? parseInt(limit as string) : 10,
-            customLabels: customPaginateLabels
-          };
+            customLabels: customPaginateLabels,
+        };
 
         const toppings = await this.toppingService.getToppings(
             q as string,
             filters,
-            paginateOptions
+            paginateOptions,
         );
+        const finalToppings = (toppings.data as IToppings[]).map((topping) => ({
+            ...topping,
+            image: this.storage.getObjectUri(topping.image),
+        }));
 
-        res.json(toppings);
-    }
+        res.json({
+            data: finalToppings,
+            total: toppings.total,
+            perPage: toppings.perPage,
+            currentPage: toppings.currentPage,
+        });
+    };
 
-    getToppingById = async(req: Request, res: Response, next:NextFunction) => {
-        const {toppingId} = req.params;
+    getToppingById = async (
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) => {
+        const { toppingId } = req.params;
         const topping = await this.toppingService.getToppingById(toppingId);
 
-        if(!topping){
-            return next(createHttpError(404,"Topping not found"));
+        if (!topping) {
+            return next(createHttpError(404, "Topping not found"));
         }
 
         res.json(topping);
-    }
+    };
 
-    deleteTopping = async(req: Request, res: Response, next: NextFunction) => {
-
-        const {toppingId} = req.params;
+    deleteTopping = async (req: Request, res: Response, next: NextFunction) => {
+        const { toppingId } = req.params;
         const topping = await this.toppingService.getToppingById(toppingId);
-        if(!topping){
-            return next(createHttpError(404,"Topping not found"));
+        if (!topping) {
+            return next(createHttpError(404, "Topping not found"));
         }
-        if(req.auth?.role !== "admin"){
+        if (req.auth?.role !== "admin") {
             const tenant = req.auth?.tenantId;
-            if(tenant !== topping.tenantId){
-                return next(createHttpError(
-                    403,
-                    "You are not authorized to delete this topping",
-                ));
+            if (tenant !== topping.tenantId) {
+                return next(
+                    createHttpError(
+                        403,
+                        "You are not authorized to delete this topping",
+                    ),
+                );
             }
         }
 
         // delete the topping image from cloud storage
         const image = await this.toppingService.getToppingImage(toppingId);
-        if(image){
+        if (image) {
             await this.storage.delete(image);
         }
         this.logger.info("Topping image deleted successfully");
@@ -179,5 +195,5 @@ export class ToppingsController {
         this.logger.info("Topping deleted successfully");
 
         res.json({});
-    }
-} 
+    };
+}

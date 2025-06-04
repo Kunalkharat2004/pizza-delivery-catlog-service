@@ -24,7 +24,7 @@ router.post(
     authenticate,
     canAccess([ROLES.ADMIN, ROLES.MANAGER]),
     fileUpload({
-        limits: { fileSize: 500 * 1024 }, // 500 KB
+        limits: { fileSize: 1.5 * 1024 * 1024 }, // 1.5MB
         abortOnLimit: true,
         limitHandler: (req, res, next) => {
             return next(
@@ -43,7 +43,7 @@ router.patch(
     authenticate,
     canAccess([ROLES.ADMIN, ROLES.MANAGER]),
     fileUpload({
-        limits: { fileSize: 500 * 1024 }, // 500 KB
+        limits: { fileSize: 1.5 * 1024 * 1024 }, // 1.5MB
         abortOnLimit: true,
         limitHandler: (req, res, next) => {
             return next(
@@ -54,7 +54,7 @@ router.patch(
     toppingValidator,
     handleValidationErrors,
     asyncWrapper(toppingsController.updateTopping),
-)
+);
 
 // GET toppings
 router.get(
