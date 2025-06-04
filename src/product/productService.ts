@@ -99,6 +99,7 @@ export class ProductService {
                                 _id: 1,
                                 name: 1,
                                 attributeConfiguration: 1,
+                                priceConfiguration: 1,
                             },
                         },
                     ],

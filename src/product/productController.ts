@@ -173,8 +173,6 @@ export class ProductController {
             paginateOptions,
         );
 
-        console.log
-
         const finalProucts = (products.data as IProduct[]).map((product) => ({
             ...product,
             image: this.storage.getObjectUri(product.image),
