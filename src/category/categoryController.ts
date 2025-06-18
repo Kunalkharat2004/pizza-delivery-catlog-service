@@ -10,7 +10,7 @@ class CategoryController {
     ) {}
 
     create = async (req: Request, res: Response, next: NextFunction) => {
-        const { name, priceConfiguration, attributeConfiguration } = req.body;
+        const { name, priceConfiguration, attributeConfiguration, hasToppings } = req.body;
         this.logger.info("Creating category", {
             name,
             priceConfiguration,
@@ -20,6 +20,7 @@ class CategoryController {
             name,
             priceConfiguration,
             attributeConfiguration,
+            hasToppings
         });
         this.logger.info("Category created successfully", { category });
         res.status(201).json({
@@ -29,6 +30,9 @@ class CategoryController {
     }
 
     getCategories = async (req: Request, res: Response, next: NextFunction) => {
+              const sleep = (ms: number) =>
+                  new Promise((resolve) => setTimeout(resolve, ms));
+            //   await sleep(10000);
         const categories = await this.catergoryService.getAllCategories();
         res.json(categories);
     }
@@ -47,11 +51,16 @@ class CategoryController {
 
     updateCategory = async (req: Request, res: Response) => {
         const categoryId = req.params.id;
-        const { name, priceConfiguration, attributeConfiguration } = req.body;
+        const {
+            name,
+            priceConfiguration,
+            attributeConfiguration,
+            hasToppings,
+        } = req.body;
 
         const updatedCategory = await this.catergoryService.updateCategory(
             categoryId,
-            { name, priceConfiguration, attributeConfiguration },
+            { name, priceConfiguration, attributeConfiguration, hasToppings },
         );
 
         this.logger.info(`Category with id ${categoryId} updated successfully!`,{updatedCategory});

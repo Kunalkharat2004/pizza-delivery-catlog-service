@@ -13,7 +13,8 @@ export interface IAttributeConfiguration {
    }
    
 export interface ICategory {
-       name: string,
-       priceConfiguration: IPriceConfiguration,
-       attributeConfiguration: Array<IAttributeConfiguration>
-   }
+    name: string;
+    priceConfiguration: IPriceConfiguration;
+    attributeConfiguration: Array<IAttributeConfiguration>;
+    hasToppings: boolean;
+}

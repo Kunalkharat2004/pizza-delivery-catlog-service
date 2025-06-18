@@ -100,6 +100,7 @@ export class ProductService {
                                 name: 1,
                                 attributeConfiguration: 1,
                                 priceConfiguration: 1,
+                                hasToppings: 1,
                             },
                         },
                     ],
