@@ -2,18 +2,22 @@ import { Request } from "express-jwt";
 import { v4 as uuidv4 } from "uuid";
 import { NextFunction, Response } from "express";
 import { UploadedFile } from "express-fileupload";
+import createHttpError from "http-errors";
+import config from "config";
 import { FileStorage } from "../common/types/storage";
 import { Logger } from "winston";
 import { ToppingService } from "./toppingService";
-import createHttpError from "http-errors";
-import { IToppings, ToppingFilters } from "./toppingsTypes";
+import { IToppings, ToppingEvents, ToppingFilters } from "./toppingsTypes";
 import { customPaginateLabels } from "../config/customPaginateLabels";
+import { MessageProducerBroker } from "../common/types/brokers";
+
 
 export class ToppingsController {
     constructor(
         private toppingService: ToppingService,
         private storage: FileStorage,
         private logger: Logger,
+        private messageProducerBroker: MessageProducerBroker,
     ) {}
 
     createTopping = async (req: Request, res: Response) => {
@@ -42,6 +46,19 @@ export class ToppingsController {
         const createdTopping = await this.toppingService.createTopping(topping);
 
         this.logger.info("Topping created successfully", { createdTopping });
+        // Publish a message to the broker
+        const message = JSON.stringify({
+            event: ToppingEvents.TOPPING_CREATE,
+            data: {
+                id: createdTopping._id,
+                price: createdTopping.price,
+            }
+        });
+        await this.messageProducerBroker.sendMessage(
+            config.get("kafka.topics.topping"),
+            message,
+        )
+
         res.status(201).json({
             msg: "Topping created successfully",
             _id: createdTopping._id,
@@ -111,6 +128,19 @@ export class ToppingsController {
 
         this.logger.info(`Topping updated successfully: ${updatedTopping._id}`);
 
+        // Publish a message to the broker
+        const message = JSON.stringify({
+            event: ToppingEvents.TOPPING_UPDATE,
+            data: {
+                id: updatedTopping._id,
+                price: updatedTopping.price,
+            },
+        });
+        await this.messageProducerBroker.sendMessage(
+            config.get("kafka.topics.topping"),
+            message,
+        );
+
         res.json({
             msg: "Topping updated successfully",
             _id: updatedTopping._id,
@@ -118,8 +148,8 @@ export class ToppingsController {
     };
 
     getToppings = async (req: Request, res: Response) => {
-
-        const sleep = ((ms:number)=> new Promise(resolve => setTimeout(resolve, ms)));
+        const sleep = (ms: number) =>
+            new Promise((resolve) => setTimeout(resolve, ms));
         // await sleep(10000);
         const { q, tenantId, isPublished, page, limit } = req.query;
         const filters: ToppingFilters = {};

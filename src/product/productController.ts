@@ -70,8 +70,8 @@ export class ProductController {
             }
         })
          await this.messageProducerBroker.sendMessage(
-             config.get<string>("kafka.topic"),
-             message,
+             config.get<string>("kafka.topics.product"),
+            message,
          );
 
         res.status(201).json({
@@ -163,7 +163,7 @@ export class ProductController {
         })
 
         await this.messageProducerBroker.sendMessage(
-            config.get<string>("kafka.topic"),
+            config.get<string>("kafka.topics.product"),
             message,
         );
 
