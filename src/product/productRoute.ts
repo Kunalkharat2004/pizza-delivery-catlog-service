@@ -12,15 +12,18 @@ import logger from "../config/logger";
 import { S3Storage } from "../common/services/S3Storage";
 import createHttpError from "http-errors";
 import updateValidationRules from "./validator/updateValidationRules";
+import { createMessageProducerBroker } from "../common/factories/brokerFactory";
 
 const router = Router();
 
 const productService = new ProductService();
 const s3Storage = new S3Storage();
+const messageProducerBroker = createMessageProducerBroker();
 const productController = new ProductController(
     productService,
     logger,
     s3Storage,
+    messageProducerBroker,
 );
 
 router.post(

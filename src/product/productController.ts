@@ -6,15 +6,18 @@ import { v4 as uuidv4 } from "uuid";
 import { ProductService } from "./productService";
 import { FileStorage } from "../common/types/storage";
 import createHttpError from "http-errors";
-import { FilterData, IProduct } from "./productTypes";
+import { FilterData, IProduct, ProductEvents } from "./productTypes";
 import mongoose from "mongoose";
 import { customPaginateLabels } from "../config/customPaginateLabels";
+import { MessageProducerBroker } from "../common/types/brokers";
+import config from "config";
 
 export class ProductController {
     constructor(
         private productService: ProductService,
         private logger: Logger,
         private storage: FileStorage,
+        private messageProducerBroker: MessageProducerBroker,
     ) {}
 
     createProduct = async (req: Request, res: Response, next: NextFunction) => {
@@ -58,6 +61,18 @@ export class ProductController {
         const createdProduct = await this.productService.createProduct(product);
 
         this.logger.info("Product created successfully", { createdProduct });
+        // Emit a Kafka message for product creation
+        const message = JSON.stringify({
+            event: ProductEvents.PRODUCT_CREATE,
+            data: {
+                id: createdProduct._id,
+                priceConfiguration: createdProduct.priceConfiguration,
+            }
+        })
+         await this.messageProducerBroker.sendMessage(
+             config.get<string>("kafka.topic"),
+             message,
+         );
 
         res.status(201).json({
             msg: "Product created successfully",
@@ -137,6 +152,20 @@ export class ProductController {
             productToUpdate,
         );
         this.logger.info("Product updated successfully", { updatedProduct });
+        // Emit a Kafka message for product update
+
+        const message = JSON.stringify({
+            event: ProductEvents.PRODUCT_UPDATE,
+            data: {
+                id: updatedProduct._id,
+                priceConfiguration: updatedProduct.priceConfiguration,
+            }
+        })
+
+        await this.messageProducerBroker.sendMessage(
+            config.get<string>("kafka.topic"),
+            message,
+        );
 
         res.status(200).json({
             msg: "Product updated successfully",
