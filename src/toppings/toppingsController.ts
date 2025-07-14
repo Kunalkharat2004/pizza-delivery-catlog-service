@@ -227,6 +227,8 @@ export class ToppingsController {
         await this.toppingService.deleteTopping(toppingId);
         this.logger.info("Topping deleted successfully");
 
+        
+
         res.json({});
     };
 }

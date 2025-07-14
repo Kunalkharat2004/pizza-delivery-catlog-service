@@ -11,6 +11,7 @@ import mongoose from "mongoose";
 import { customPaginateLabels } from "../config/customPaginateLabels";
 import { MessageProducerBroker } from "../common/types/brokers";
 import config from "config";
+import { mapToObject } from "../utils";
 
 export class ProductController {
     constructor(
@@ -66,7 +67,9 @@ export class ProductController {
             event: ProductEvents.PRODUCT_CREATE,
             data: {
                 id: createdProduct._id,
-                priceConfiguration: createdProduct.priceConfiguration,
+                priceConfiguration: mapToObject(
+                    createdProduct.priceConfiguration as Map<string, any>
+                ),
             }
         })
          await this.messageProducerBroker.sendMessage(
@@ -158,7 +161,9 @@ export class ProductController {
             event: ProductEvents.PRODUCT_UPDATE,
             data: {
                 id: updatedProduct._id,
-                priceConfiguration: updatedProduct.priceConfiguration,
+                priceConfiguration: mapToObject(
+                    updatedProduct.priceConfiguration as Map<string, any>
+                ),
             }
         })
 
