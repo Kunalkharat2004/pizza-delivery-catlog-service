@@ -225,9 +225,21 @@ export class ToppingsController {
         this.logger.info("Topping image deleted successfully");
 
         await this.toppingService.deleteTopping(toppingId);
+
+
         this.logger.info("Topping deleted successfully");
 
-        
+         // Publish a message to the broker
+        const message = JSON.stringify({
+            event: ToppingEvents.TOPPING_DELETE,
+            data: {
+                id: toppingId,
+            },
+        });
+        await this.messageProducerBroker.sendMessage(
+            config.get("kafka.topics.topping"),
+            message,
+        );
 
         res.json({});
     };

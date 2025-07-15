@@ -265,6 +265,20 @@ export class ProductController {
         // Delete the product from the database
         await this.productService.deleteProduct(productId);
 
+          // Emit a Kafka message for product update
+
+        const message = JSON.stringify({
+            event: ProductEvents.PRODUCT_DELETE,
+            data: {
+                id: productId,
+            }
+        })
+
+        await this.messageProducerBroker.sendMessage(
+            config.get<string>("kafka.topics.product"),
+            message,
+        );
+
         res.json({});
     };
 }
