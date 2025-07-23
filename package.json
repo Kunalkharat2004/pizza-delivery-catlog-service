@@ -34,7 +34,6 @@
         "config": "^3.3.12",
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.5",
-        "cross-env": "^7.0.3",
         "express": "^5.1.0",
         "express-fileupload": "^1.5.1",
         "express-jwt": "^8.5.1",
@@ -46,7 +45,8 @@
         "mongoose": "^8.13.2",
         "mongoose-aggregate-paginate-v2": "^1.1.4",
         "uuid": "^11.1.0",
-        "winston": "^3.17.0"
+        "winston": "^3.17.0",
+        "ts-node": "^10.9.2"
     },
     "devDependencies": {
         "@types/config": "^3.3.5",
@@ -61,6 +61,7 @@
         "@types/winston": "^2.4.4",
         "@typescript-eslint/eslint-plugin": "^8.29.0",
         "@typescript-eslint/parser": "^8.29.0",
+        "cross-env": "^7.0.3",
         "eslint": "^9.23.0",
         "eslint-config-prettier": "^10.1.1",
         "husky": "^9.1.7",
@@ -70,7 +71,6 @@
         "prettier": "^3.5.3",
         "supertest": "^7.1.0",
         "ts-jest": "^29.3.1",
-        "ts-node": "^10.9.2",
         "typescript": "^5.8.2"
     }
 }
