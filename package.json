@@ -44,13 +44,14 @@
         "kafkajs": "^2.2.4",
         "mongoose": "^8.13.2",
         "mongoose-aggregate-paginate-v2": "^1.1.4",
+        "ts-node": "^10.9.2",
         "uuid": "^11.1.0",
-        "winston": "^3.17.0",
-        "ts-node": "^10.9.2"
+        "winston": "^3.17.0"
     },
     "devDependencies": {
         "@types/config": "^3.3.5",
         "@types/cookie-parser": "^1.4.8",
+        "@types/cors": "^2.8.19",
         "@types/express": "^5.0.1",
         "@types/express-fileupload": "^1.5.1",
         "@types/http-errors": "^2.0.4",
