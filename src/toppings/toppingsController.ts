@@ -10,7 +10,8 @@ import { ToppingService } from "./toppingService";
 import { IToppings, ToppingEvents, ToppingFilters } from "./toppingsTypes";
 import { customPaginateLabels } from "../config/customPaginateLabels";
 import { MessageProducerBroker } from "../common/types/brokers";
-
+import { FilterData } from "../product/productTypes";
+import mongoose from "mongoose";
 
 export class ToppingsController {
     constructor(
@@ -21,7 +22,8 @@ export class ToppingsController {
     ) {}
 
     createTopping = async (req: Request, res: Response) => {
-        const { name, image, price, tenantId, isPublished } = req.body;
+        const { name, image, price, tenantId, categoryId, isPublished } =
+            req.body;
 
         // Upload the topping image to cloud storage
         const file = req.files?.image as UploadedFile;
@@ -40,6 +42,7 @@ export class ToppingsController {
             image: fileName,
             price,
             tenantId,
+            categoryId,
             isPublished: isPublished === "true" ? true : false,
         };
 
@@ -52,12 +55,12 @@ export class ToppingsController {
             data: {
                 id: createdTopping._id,
                 price: createdTopping.price,
-            }
+            },
         });
         await this.messageProducerBroker.sendMessage(
             config.get("kafka.topics.topping"),
             message,
-        )
+        );
 
         res.status(201).json({
             msg: "Topping created successfully",
@@ -86,7 +89,8 @@ export class ToppingsController {
                 );
             }
         }
-        const { name, image, price, tenantId, isPublished } = req.body;
+        const { name, image, price, tenantId, categoryId, isPublished } =
+            req.body;
 
         let oldImage: string | undefined;
         let newImage: string | undefined;
@@ -118,6 +122,7 @@ export class ToppingsController {
             image: newImage ?? oldImage,
             price,
             tenantId,
+            categoryId,
             isPublished: isPublished === "true" ? true : false,
         };
 
@@ -151,14 +156,19 @@ export class ToppingsController {
         const sleep = (ms: number) =>
             new Promise((resolve) => setTimeout(resolve, ms));
         // await sleep(10000);
-        const { q, tenantId, isPublished, page, limit } = req.query;
-        const filters: ToppingFilters = {};
+        const { q, tenantId, categoryId, isPublished, page, limit } = req.query;
+        const filters: FilterData = {};
 
         if (isPublished) {
             filters.isPublished = isPublished === "true" ? true : false;
         }
         if (tenantId) {
             filters.tenantId = tenantId as string;
+        }
+        if (categoryId) {
+            filters.categoryId = new mongoose.Types.ObjectId(
+                categoryId as string,
+            );
         }
         const paginateOptions = {
             page: req.query.page ? parseInt(page as string) : 1,
@@ -226,10 +236,9 @@ export class ToppingsController {
 
         await this.toppingService.deleteTopping(toppingId);
 
-
         this.logger.info("Topping deleted successfully");
 
-         // Publish a message to the broker
+        // Publish a message to the broker
         const message = JSON.stringify({
             event: ToppingEvents.TOPPING_DELETE,
             data: {

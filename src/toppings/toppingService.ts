@@ -46,11 +46,35 @@ export class ToppingService {
             ...filterData
         }
 
-        const aggregate = toppingsModel.aggregate([
-            {
-                $match: matchedQuery
-            }
-        ]);
+         const aggregate = toppingsModel.aggregate([
+                    {
+                        $match: matchedQuery,
+                    },
+                    {
+                        $lookup: {
+                            from: "categories",
+                            localField: "categoryId",
+                            foreignField: "_id",
+                            as: "category",
+                            pipeline: [
+                                {
+                                    $project: {
+                                        _id: 1,
+                                        name: 1,
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: "$category",
+                    },
+                    {
+                        $sort: {
+                            createdAt: -1, // Sort by creation date in descending order
+                        }
+                    }
+                ]);
 
         const toppings = await toppingsModel.aggregatePaginate(aggregate, paginateOptions)
 
