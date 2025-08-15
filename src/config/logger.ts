@@ -30,7 +30,7 @@ const logger = winston.createLogger({
     format.splat(),
     customFormat
   ),
-  defaultMeta: { service: "auth-service" },
+  defaultMeta: { service: "catalog-service" },
   transports: [
     // Console Logs
     new transports.Console({
